@@ -1,21 +1,20 @@
 
-
 # this function requires 
 #source('SmoothData.R')
 #source('hatK.R')
 
 Est_FDF <- function(argvals=NULL,
                     data, 
-                    rangeval =c(0,1),
                     stationary=TRUE,
                     h=5,
                     k=NULL,
                     kmax=6,
                     p=5,
+                    kern_type = "BT",
+                    rangeval =c(0,1),
                     nbasis=25,
                     basis='Fourier',
                     lambda = NULL,
-                    kern_type = "BT",
                     plot=FALSE){
   # it computes the estimators described on the main paper
   # args:
@@ -27,12 +26,13 @@ Est_FDF <- function(argvals=NULL,
   #   k: number of factor t be used. If NULL, then it is estimated as described on the main paper
   #   kmax: max number of factors to be tested
   #   p: number of eigenfunctions to be used to approximate the inverse of the cov operator
+  #   kern_type: type of kernel to be used when estimating the long run cov operator.
+  #   rangeval: a numeric vector of length 2 defining the interval over which the functional data object can be evaluated
   #   nbasis: number of basis functions to be used for the functional data.
   #   basis: type of basis. The options are: 'Fourier' and 'Bspline'
   #   lambda: a nonnegative real number specifying the amount of smoothing to be applied 
   #           to the estimated functional parameter. If NULL, this is estimated using
   #            generalized cross validation
-  #   kern_type: type of kernel to be used when estimating the long run cov operator.
   #   plot: if TRUE a plot is displayed
   # values: a list  
   #   Fhat: the estimated time series \beta
@@ -81,18 +81,27 @@ Est_FDF <- function(argvals=NULL,
     }
   }
   
-  datafd0 <- SmoothData(argvals=argvals,
-                        data = data, 
-                        type_basis=basis, 
-                        nbasis=nbasis,
-                        rangeval = rangeval,
-                        lambda = lambda)$fd
+  if( sum(class(data)%in%"fd")!=0 ){
+    rangeval=data$basis$rangeval
+    N <- dim(data$coefs)[2]
+    datafd0 <- data
+    m <- 100
+  }else{
+    N <- dim(data)[2]
+    m <- dim(data)[1]
+    datafd0 <- SmoothData(argvals=argvals,
+                          data = data, 
+                          type_basis=basis, 
+                          nbasis=nbasis,
+                          rangeval = rangeval,
+                          lambda = lambda)$fd  
+  }
+  
   CC0 <- t(coef(datafd0))    # N x nbasis
   xbasis <- datafd0$basis
   
   #Stationary case
   if(stationary){
-    N <- dim(data)[2]
     datafd <- datafd0
     # we need BB, CCmh,CCph
     #BB
@@ -139,14 +148,23 @@ Est_FDF <- function(argvals=NULL,
     #factor processes
     ff <- CC%*%Jinprod%*%AA
   }else{
-  newdata <- t(apply(data, 1, diff))
-  N <- dim(newdata)[2]
-  datafd <- SmoothData(argvals=argvals,
-                       data = newdata, 
-                       type_basis=basis, 
-                       nbasis=nbasis,
-                       rangeval = rangeval,
-                       lambda = lambda)$fd
+    if(sum(class(data)%in%"fd")!=0){
+      rangeval=data$basis$rangeval
+      newCoeff <- t(apply(data$coefs, 1, diff))
+      datafd <- fd(newCoeff, data$basis)
+      N <- dim(newCoeff)[2]
+      m <- 100
+    }else{
+      newdata <- t(apply(data, 1, diff))
+      N <- dim(newdata)[2]
+      m <- dim(data)[1]
+      datafd <- SmoothData(argvals=argvals,
+                           data = newdata, 
+                           type_basis=basis, 
+                           nbasis=nbasis,
+                           rangeval = rangeval,
+                           lambda = lambda)$fd
+    }
   #BB
   Datopca <- pca.fd(datafd, nharm =p)
   lam0 <- Datopca$values
@@ -191,11 +209,13 @@ Est_FDF <- function(argvals=NULL,
   #factor process
   ff <- CC0%*%Jinprod%*%AA
   }
+  
   # fitting
   if(is.null(argvals)){
-    tt <- seq(rangeval[1],rangeval[2], length.out = dim(data)[1])  
+    tt <- seq(rangeval[1],rangeval[2], length.out = m)  
   }else{
     tt=argvals}
+  
   Xhat <-  eval.fd(tt,lam)%*%t(as.matrix(ff))
   # scree plot
   hatk0=which.min(Re(result$values[1:kmax]))

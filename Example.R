@@ -24,6 +24,7 @@ opt_bandwidth(h_datafd, "PR", "BT", is_change = FALSE)$hat_h_opt
 # this is 9
 # end of this can be skipped
 
+# estimate F_k and beta_{ki} using discrete data.
 est1 <- Est_FDF(data=toy.data1$Data,
                 h=9,k=2,p=5,nbasis=25,
                 basis='Fourier',
