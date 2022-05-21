@@ -86,6 +86,7 @@ Est_FDF <- function(argvals=NULL,
     N <- dim(data$coefs)[2]
     datafd0 <- data
     m <- 100
+    nbasis <- data$basis$nbasis
   }else{
     N <- dim(data)[2]
     m <- dim(data)[1]
@@ -154,6 +155,7 @@ Est_FDF <- function(argvals=NULL,
       datafd <- fd(newCoeff, data$basis)
       N <- dim(newCoeff)[2]
       m <- 100
+      nbasis <- data$basis$nbasis
     }else{
       newdata <- t(apply(data, 1, diff))
       N <- dim(newdata)[2]
