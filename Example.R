@@ -2,7 +2,7 @@
 
 require(ggplot2)
 require(latex2exp)
-source('Est_FDF.R')
+source('FDF.R')
 source('hatK.R')
 source('SmoothData.R')
 
@@ -28,8 +28,6 @@ opt_bandwidth(h_datafd, "PR", "BT", is_change = FALSE)$hat_h_opt
 est1 <- Est_FDF(data=toy.data1$Data,
                 h=9,k=2,p=5,nbasis=25,
                 basis='Fourier',
-                kern_type = "BT",
-                lambda = NULL,
                 stationary = TRUE)
 
 data.f <- data.frame(s=toy.data1$tt, 
@@ -112,8 +110,6 @@ opt_bandwidth(h1_datafd,  kern_type='PR',kern_type_ini='BT',is_change = FALSE)$h
 est2_ns <- Est_FDF(data=toy.data2$Data,
                    h=12,k=1,p=4,nbasis=25,
                    basis='Fourier',
-                   kern_type = "BT",
-                   lambda = NULL,
                    stationary = FALSE)
 
 data.f <- data.frame(s=toy.data2$tt,
@@ -139,8 +135,6 @@ est2_s <-  Est_FDF(data=Data2,
                    h=12,k=1,p=3,
                    nbasis=25,
                    basis='Fourier',
-                   kern_type = "BT",
-                   lambda = NULL,
                    stationary = TRUE)
 
 data.f$hatf2 <- eval.fd(toy.data2$tt, est2_s$hat.F[1])
