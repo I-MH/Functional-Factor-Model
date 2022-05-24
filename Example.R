@@ -17,10 +17,10 @@ matplot(toy.data1$tt, toy.data1$Data, type = 'l', main='Func data',
 N=dim(toy.data1$Data)[2]
 # selecting the optimal window parameter
 # this can be skipped
-require(fChange)
-h_datafd <- SmoothData(data = toy.data1$Data, type_basis='Fourier', 
-                       nbasis=15,lambda = NULL)$fd
-opt_bandwidth(h_datafd, "PR", "BT", is_change = FALSE)$hat_h_opt
+#require(fChange)
+#h_datafd <- SmoothData(data = toy.data1$Data, type_basis='Fourier', 
+#                       nbasis=15,lambda = NULL)$fd
+#opt_bandwidth(h_datafd, "PR", "BT", is_change = FALSE)$hat_h_opt
 # this is 9
 # end of this can be skipped
 
