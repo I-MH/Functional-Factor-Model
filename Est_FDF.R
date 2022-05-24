@@ -136,7 +136,6 @@ Est_FDF <- function(argvals=NULL,
     Jhalf <- Jaux$vectors%*%diag(sqrt(Jaux$values))%*%t(Jaux$vectors)
     Jihalf <- solve(Jhalf)
     # we need eigenvectors of Ob
-    #Ob <- (1/(N-h))*Jhalf%*%CCh%*%Jinprod%*%BB%*%Jhalf
     Ob <- (1/N)*Jhalf%*%CCh%*%Jinprod%*%BB%*%Jhalf
     rankOb <- qr(Ob)$rank
     result <- eigen(Ob)
@@ -153,14 +152,7 @@ Est_FDF <- function(argvals=NULL,
     #factor processes
     ff <- CC%*%Jinprod%*%AA
   }else{
-    if(sum(class(data)%in%"fd")!=0){
-      rangeval=data$basis$rangeval
-      newCoeff <- t(apply(data$coefs, 1, diff))
-      datafd <- fd(newCoeff, data$basis)
-      N <- dim(newCoeff)[2]
-      m <- 100
-      nbasis <- data$basis$nbasis
-    }else{
+    if(is.numeric(data)){
       newdata <- t(apply(data, 1, diff))
       N <- dim(newdata)[2]
       m <- dim(data)[1]
@@ -170,7 +162,19 @@ Est_FDF <- function(argvals=NULL,
                            nbasis=nbasis,
                            rangeval = rangeval,
                            lambda = lambda)$fd
+    }else{
+      if(sum(class(data)%in%"fd")!=0){
+        rangeval=data$basis$rangeval
+        newCoeff <- t(apply(data$coefs, 1, diff))
+        datafd <- fd(newCoeff, data$basis)
+        N <- dim(newCoeff)[2]
+        m <- 100
+        nbasis <- data$basis$nbasis
+      }else{
+        stop("data should be a matrix or fd object") 
+      }
     }
+    
   #BB
   Datopca <- pca.fd(datafd, nharm =p)
   lam0 <- Datopca$values
@@ -194,11 +198,9 @@ Est_FDF <- function(argvals=NULL,
   Jinprod = inprod(xbasis, xbasis)
   Jsvd <- svd(Jinprod)
   Jaux <- eigen(Jinprod)
-  #Jhalf <- Jsvd$u%*%diag(sqrt(Jsvd$d))%*%t(Jsvd$v)
   Jhalf <- Jaux$vectors%*%diag(sqrt(Jaux$values))%*%t(Jaux$vectors)
   Jihalf <- solve(Jhalf)
   #
-  #Ob <- (1/(N-h))*Jhalf%*%CCh%*%Jinprod%*%BB%*%Jhalf
   Ob <- (1/N)*Jhalf%*%CCh%*%Jinprod%*%BB%*%Jhalf
   rankOb <- qr(Ob)$rank
   result <- eigen(Ob)
@@ -239,26 +241,4 @@ Est_FDF <- function(argvals=NULL,
               Ob_result=result, argvals=tt))  
 }
 
-
-# h=0: PCA
-Est_FDFh0 <- function(data,
-                      stationary=TRUE,
-                      k=1,
-                      nbasis=25,basis='Fourier',lambda = NULL){
-  datafd <- SmoothData(data = data, type_basis=basis, nbasis=nbasis,lambda = lambda)$fd
-  tt <- seq(0,1, length.out = dim(data)[1])
-  if(stationary){
-    estimator <- pca.fd(fdobj =  datafd, nharm = k, harmfdPar=fdPar(datafd),
-                  centerfns = TRUE)
-  }else{
-    newdata <- t(apply(data , 1, diff))
-    datafd2 <- SmoothData(data = newdata, type_basis=basis, nbasis=nbasis,lambda = lambda)$fd
-    estimator <-  pca.fd(fdobj =  datafd2, nharm = k, harmfdPar=fdPar(datafd2),
-                         centerfns = TRUE)
-  }
-  loadF_hat <- estimator$harmonics
-  Factor_hat <- inprod(datafd, loadF_hat)
-  Xhat <-  eval.fd(tt, loadF_hat)%*%t(as.matrix(Factor_hat) ) 
-  return(list(Fhat=Factor_hat, loadf= loadF_hat, Xhat=Xhat))
-}
 
