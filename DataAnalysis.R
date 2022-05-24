@@ -18,7 +18,7 @@ library(ftsa)
 T_stationary(MatYield, L=15) # not stationary
 
 # estimate parameters for non stationary components
-est_nst <- Est_FDF(argvals=tt, 
+est_nst <- FDF(argvals=tt, 
                       data=MatYield,
                       h=2,k=1,p=4,
                       nbasis=15,
@@ -34,7 +34,7 @@ MatYield2 <- MatYield - est_nst$Xhat
 T_stationary(MatYield2, L=15)
 
 # estimate parameters for stationary components
-est_st <- Est_FDF(argvals=tt,
+est_st <- FDF(argvals=tt,
                   data=MatYield2,
                   stationary=TRUE,
                   h=19,k=2,p=5,
