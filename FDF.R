@@ -1,7 +1,7 @@
 
 # this function requires 
-#source('SmoothData.R')
-#source('hatK.R')
+# source('SmoothData.R')
+# source('hatK.R')
 
 FDF <- function(argvals=NULL,
                     data, 
