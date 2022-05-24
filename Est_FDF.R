@@ -81,13 +81,7 @@ Est_FDF <- function(argvals=NULL,
     }
   }
   
-  if( sum(class(data)%in%"fd")!=0 ){
-    rangeval=data$basis$rangeval
-    N <- dim(data$coefs)[2]
-    datafd0 <- data
-    m <- 100
-    nbasis <- data$basis$nbasis
-  }else{
+  if(is.numeric(data)){
     N <- dim(data)[2]
     m <- dim(data)[1]
     datafd0 <- SmoothData(argvals=argvals,
@@ -95,7 +89,17 @@ Est_FDF <- function(argvals=NULL,
                           type_basis=basis, 
                           nbasis=nbasis,
                           rangeval = rangeval,
-                          lambda = lambda)$fd  
+                          lambda = lambda)$fd 
+    }else{ 
+      if( sum(class(data)%in%"fd")!=0 ){
+        rangeval=data$basis$rangeval
+        N <- dim(data$coefs)[2]
+        datafd0 <- data
+        m <- 100
+        nbasis <- data$basis$nbasis
+      }else{
+        stop("data should be a matrix or fd object") 
+      }
   }
   
   CC0 <- t(coef(datafd0))    # N x nbasis
