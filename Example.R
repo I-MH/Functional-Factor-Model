@@ -25,7 +25,7 @@ opt_bandwidth(h_datafd, "PR", "BT", is_change = FALSE)$hat_h_opt
 # end of this can be skipped
 
 # estimate F_k and beta_{ki} using discrete data.
-est1 <- Est_FDF(data=toy.data1$Data,
+est1 <- FDF(data=toy.data1$Data,
                 h=9,k=2,p=5,nbasis=25,
                 basis='Fourier',
                 stationary = TRUE)
@@ -107,7 +107,7 @@ opt_bandwidth(h1_datafd,  kern_type='PR',kern_type_ini='BT',is_change = FALSE)$h
 # end of this can be skipped
 
 # estimate the parameters for the non stationary components
-est2_ns <- Est_FDF(data=toy.data2$Data,
+est2_ns <- FDF(data=toy.data2$Data,
                    h=12,k=1,p=4,nbasis=25,
                    basis='Fourier',
                    stationary = FALSE)
@@ -131,7 +131,7 @@ opt_bandwidth(h2_datafd,  kern_type='PR',kern_type_ini='BT',is_change = FALSE)$h
 # end of this can be skipped
 #-----------------------------------------------------------------
 
-est2_s <-  Est_FDF(data=Data2,
+est2_s <-  FDF(data=Data2,
                    h=12,k=1,p=3,
                    nbasis=25,
                    basis='Fourier',

@@ -3,7 +3,7 @@
 #source('SmoothData.R')
 #source('hatK.R')
 
-Est_FDF <- function(argvals=NULL,
+FDF <- function(argvals=NULL,
                     data, 
                     stationary=TRUE,
                     h=5,
