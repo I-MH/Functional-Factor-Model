@@ -10,8 +10,8 @@ source('SmoothData.R')
 # stationary case --------------------------------------------------------------
 
 # load data
-# load("ToyData1.RData")
-matplot(toy.data1$tt, toy.data1$Data, type = 'l', main='Func data',
+load("ToyData1.RData")
+matplot(toy.data1$tt, toy.data1$Data, type = 'l', main='Functional data',
         xlab = 's', ylab = ' ')
 
 N=dim(toy.data1$Data)[2]
