@@ -239,7 +239,7 @@ FDF <- function(argvals=NULL,
   lam.fd <- list(lam, result$values, inprod(datafd, lam))
   class(lam.fd) <- "pca.fd"
   names(lam.fd) <- c("harmonics", "values", "scores")
-  ff.Varmx <- varmx.pca.fd(lam.fd)
+  ff.Varmx <- varmx.pca.fd(lam.fd, nharm=dim(ff)[2])
   
   return(list(hat.beta=ff, hat.F=lam, Varmx=ff.Varmx,
               hat.beta.Varmx=ff.Varmx$scores, hat.f.Varmx= ff.Varmx$harmonics,
