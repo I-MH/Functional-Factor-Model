@@ -235,8 +235,8 @@ FDF <- function(argvals=NULL,
   points(hatK_aux$hat_k,hatK_aux$ratio[hatK_aux$hat_k], col=2,pch=20)
   par(mfrow=c(1,1))
   }
-  # lam.fd has class pca.fd
-  lam.fd <- list(lam, result$values, inprod(datafd, lam))
+  # make lam.fd a pca.fd class to be able to use varmx.pca.fd() function
+  lam.fd <- list(lam, result$values, ff)
   class(lam.fd) <- "pca.fd"
   names(lam.fd) <- c("harmonics", "values", "scores")
   ff.Varmx <- varmx.pca.fd(lam.fd, nharm=dim(ff)[2])
