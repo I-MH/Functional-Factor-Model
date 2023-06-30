@@ -115,9 +115,11 @@ FDF2 <- function(argvals=NULL,
     tt <- seq(rangeval[1],rangeval[2], length.out = m)  
   }else{
     tt=argvals}
-
   Xhat <-  eval.fd(tt,lam)%*%t(as.matrix(ff))
-  
+  # fd version
+  coeff.fit <- lam$coefs %*% t(ff)
+  Xhat.fd <- fd(coeff.fit, basisobj = xbasis)
+  error.fd <- fd( datafd0$coefs-coeff.fit, basisobj = xbasis)
   # scree plot
   hatk0=which.min(Re(result.lrc$eigenval[1:kmax]))
   if(plot){
@@ -143,7 +145,7 @@ FDF2 <- function(argvals=NULL,
   return(list(hat.beta=ff, hat.F=lam, Varmx=ff.Varmx,
               hat.beta.Varmx=ff.Varmx$scores, hat.f.Varmx= ff.Varmx$harmonics,
               hat.K_ratio=hatK_aux$hat_k, hat.K.scree=hatk0,
-              Xhat=Xhat, eigenval=Re(result.lrc$eigenval),
+              Xhat=Xhat, Xhat.fd=Xhat.fd, error.fd=error.fd, eigenval=Re(result.lrc$eigenval),
               argvals=tt))  
 }
 
