@@ -4,7 +4,8 @@ require(latex2exp)
 source('FDF.R')
 source('hatK.R')
 source('SmoothData.R')
-
+source('data.fd.R')
+source('lrc.R')
 
 # stationary case --------------------------------------------------------------
 
@@ -91,19 +92,20 @@ p+geom_line(aes(y=f2, color='Truth', linetype = "Truth"), size=.8) +
 # non stationary case ----------------------------------------------------------
 
 # load data
-# load("ToyData1.RData")
+load("ToyData2.RData")
 N=dim(toy.data2$Data)[2]
 
 # selecting the optimal window parameter
-# this can be skipped
-require(fChange)
-h1_datafd <- SmoothData(data= t(apply(toy.data2$Data,1, diff)), 
-                        type_basis='Fourier', 
-                        nbasis=25,
-                        lambda = NULL)$fd
-opt_bandwidth(h1_datafd,  kern_type='PR',kern_type_ini='BT',is_change = FALSE)$hat_h_opt 
+# this can be skipped -----------------------------------
+#require(fChange)
+#h1_datafd <- SmoothData(data= t(apply(toy.data2$Data,1, diff)), 
+#                        type_basis='Fourier', 
+#                        nbasis=25,
+#                        lambda = NULL)$fd
+#opt_bandwidth(h1_datafd,  kern_type='PR',kern_type_ini='BT',is_change = FALSE)$hat_h_opt 
+
 # this is 12
-# end of this can be skipped
+# end of this can be skipped ----------------------------
 
 # estimate the parameters for the non stationary components
 est2_ns <- FDF(data=toy.data2$Data,
